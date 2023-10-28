@@ -62,16 +62,18 @@ class _HomeScreenState extends State<HomeScreen> {
               });
         }),
         body: ListView.builder(
-            itemCount: provider.api?.employees?.length,
+            itemCount: provider.employeeModel?.employees?.length,
             itemBuilder: (context, index) {
               return SizedBox(
                 width: 200,
                 height: 50,
                 child: ListTile(
-                  title:
-                      Text(provider.api?.employees?[index].employeeName ?? ""),
-                  subtitle:
-                      Text(provider.api?.employees?[index].designation ?? ""),
+                  title: Text(
+                      provider.employeeModel?.employees?[index].employeeName ??
+                          ""),
+                  subtitle: Text(
+                      provider.employeeModel?.employees?[index].designation ??
+                          ""),
                   trailing: Container(
                     // color: Colors.red,
                     width: MediaQuery.of(context).size.width * 0.2,
@@ -79,6 +81,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
+                            titleController.text = provider.employeeModel
+                                    ?.employees?[index].employeeName ??
+                                "";
+                            subTitleController.text = provider.employeeModel
+                                    ?.employees?[index].designation ??
+                                "";
                             showModalBottomSheet(
                                 context: context,
                                 builder: (context) {
@@ -106,15 +114,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                               Provider.of<EmployeeController>(
                                                       context,
                                                       listen: false)
-                                                  .addEmployee(
+                                                  .editEmployee(
                                                       title:
                                                           titleController.text,
                                                       subtitle:
                                                           subTitleController
-                                                              .text);
+                                                              .text,
+                                                      id: provider
+                                                              .employeeModel
+                                                              ?.employees?[
+                                                                  index]
+                                                              .id ??
+                                                          "");
+
+                                              titleController.clear();
+                                              subTitleController.clear();
                                               Navigator.of(context).pop();
                                             },
-                                            child: Text("submit"))
+                                            child: Text("update"))
                                       ]),
                                     ),
                                   );
@@ -136,7 +153,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             Provider.of<EmployeeController>(context,
                                     listen: false)
                                 .deleteEmployee(
-                                    id: provider.api?.employees?[index].id ??
+                                    id: provider.employeeModel
+                                            ?.employees?[index].id ??
                                         "");
 
                             ScaffoldMessenger.of(context).showSnackBar(

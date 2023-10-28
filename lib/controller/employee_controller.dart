@@ -5,24 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class EmployeeController with ChangeNotifier {
-  Employee? api;
+  Employee? employeeModel;
 
   // C R U D
 
   //get data from server
   fetchEmployee() async {
-    final baseurl = "http://3.92.68.133:8000/api/addemployee/";
-    final response = await http.get(Uri.parse(baseurl));
-    var responseData = jsonDecode(response.body);
-    api = Employee.fromJson(responseData);
+    final url = Uri.parse("http://3.92.68.133:8000/api/addemployee/");
+    final response = await http.get(url);
+    var decodedData = jsonDecode(response.body);
+    employeeModel = Employee.fromJson(decodedData);
     notifyListeners();
   }
 
   //add data to server
   addEmployee({required String title, required String subtitle}) async {
     final baseurl = "http://3.92.68.133:8000/api/addemployee/";
-    await http.post(Uri.parse(baseurl),
-        body: {"employee_name": title, "designation": subtitle});
+    final url = Uri.parse(baseurl);
+    await http
+        .post(url, body: {"employee_name": title, "designation": subtitle});
     fetchEmployee();
 
     notifyListeners();
@@ -31,16 +32,27 @@ class EmployeeController with ChangeNotifier {
   //delete data from server
   deleteEmployee({required String id}) async {
     final baseurl = "http://3.92.68.133:8000/api/addemployee/$id/";
-    await http.delete(Uri.parse(baseurl));
+    final response = await http.delete(Uri.parse(baseurl));
+    if (response.statusCode == 200) {
+      print('Successfully deleted');
+    }
     fetchEmployee();
     notifyListeners();
   }
 
-  //edit data from server
-  editEmployee({required String title, required String subtitle}) async {
-    final baseurl = "http://3.92.68.133:8000/api/addemployee/addemployee/";
-    await http.put(Uri.parse(baseurl),
+  //update data from server
+  Future<void> editEmployee(
+      {required String title,
+      required String subtitle,
+      required String id}) async {
+    final baseurl =
+        "http://3.92.68.133:8000/api/addemployee/api/addemployee/$id/";
+    final response = http.put(Uri.parse(baseurl),
         body: {"employee_name": title, "designation": subtitle});
+    print(response);
+    // if (response.statusCode == 200) {
+    //   print('Successfully deleted');
+    // }
     fetchEmployee();
     notifyListeners();
   }
