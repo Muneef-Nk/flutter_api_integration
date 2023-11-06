@@ -156,9 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     id: provider.employeeModel
                                             ?.employees?[index].id ??
                                         "");
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("deleted")));
                           },
                           child: Icon(
                             Icons.delete,

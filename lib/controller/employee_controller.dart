@@ -22,8 +22,13 @@ class EmployeeController with ChangeNotifier {
   addEmployee({required String title, required String subtitle}) async {
     final baseurl = "http://3.92.68.133:8000/api/addemployee/";
     final url = Uri.parse(baseurl);
-    await http
+    final response = await http
         .post(url, body: {"employee_name": title, "designation": subtitle});
+    if (response.statusCode == 200) {
+      print('Successfully posted');
+    } else {
+      print('failed posted');
+    }
     fetchEmployee();
 
     notifyListeners();
@@ -35,8 +40,11 @@ class EmployeeController with ChangeNotifier {
     final response = await http.delete(Uri.parse(baseurl));
     if (response.statusCode == 200) {
       print('Successfully deleted');
+      fetchEmployee();
+    } else {
+      print("Failed to delete employees");
     }
-    fetchEmployee();
+    print(id);
     notifyListeners();
   }
 
@@ -45,14 +53,14 @@ class EmployeeController with ChangeNotifier {
       {required String title,
       required String subtitle,
       required String id}) async {
-    final baseurl =
-        "http://3.92.68.133:8000/api/addemployee/api/addemployee/$id/";
-    final response = http.put(Uri.parse(baseurl),
-        body: {"employee_name": title, "designation": subtitle});
+    final url = Uri.parse("http://3.92.68.133:8000/api/addemployee/$id/");
+    final response = await http
+        .put(url, body: {"employee_name": title, "designation": subtitle});
+
     print(response);
-    // if (response.statusCode == 200) {
-    //   print('Successfully deleted');
-    // }
+    if (response.statusCode == 200) {
+      print('Successfully deleted');
+    }
     fetchEmployee();
     notifyListeners();
   }
